@@ -1,6 +1,4 @@
 
-def testFunction(x):
-    return x
 
 def num2letters(num):
     '''
@@ -32,7 +30,7 @@ def num2letters(num):
     elif num == 9:
         letters = ['w', 'x', 'y', 'z']
     else:
-        letters = str(num)
+        letters = [str(num)]
     return letters
         
 def format_cell(cell):
@@ -44,12 +42,13 @@ def format_cell(cell):
     return ''.join( c for c in cell if c not in '()+- ' )
 
 
-cell_test = '+1(217) 417-0499'
-print(format_cell(cell_test))
-
-while(False):
-    userInput = input('type a number (x to exit) ')
-    if userInput == 'x':
+while(True):
+    user_input = input('type a phone number (x to exit) ')
+    if user_input == 'x':
         print('Bye!')
         break
-    print('input ', userInput, ', the corresponding letters are ', num2letters(userInput))
+    user_input = format_cell(user_input)
+    for c in user_input:
+        print(c, 'corresponds to ', num2letters(c))
+
+
