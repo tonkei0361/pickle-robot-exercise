@@ -41,6 +41,30 @@ def format_cell(cell):
     
     return ''.join( c for c in cell if c not in '()+- ' )
 
+def trim_cell(cell):
+    '''
+    This function trims the input, which is a cell number
+    with special characters removed. It removes the area
+    code and only leaves the last 7 digits.
+
+    It returns a list of numbers that may be turned into
+    words. The length is set to be longer than 2 digits.
+    '''
+    cell_trimmed = cell[-7:]
+    temp = ''
+    count = 0
+    word_candidates = []
+    for c in cell_trimmed:
+        count += 1
+        if(c == '0' or c == '1'):
+            word_candidates.append(temp)
+            temp = ''
+        else:
+            temp += c
+        if count == len(cell_trimmed):
+            word_candidates.append(temp)
+    word_candidates = [s for s in word_candidates if len(s) > 2]
+    return word_candidates
 
 while(True):
     user_input = input('type a phone number (x to exit) ')
@@ -48,7 +72,6 @@ while(True):
         print('Bye!')
         break
     user_input = format_cell(user_input)
-    for c in user_input:
-        print(c, 'corresponds to ', num2letters(c))
-
+    print(user_input)
+    print('possible candidates are ', trim_cell(user_input))
 
