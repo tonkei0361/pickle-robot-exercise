@@ -1,5 +1,4 @@
 
-
 def num2letters(num):
     '''
     This function takes a single integer as
@@ -66,6 +65,23 @@ def trim_cell(cell):
     word_candidates = [s for s in word_candidates if len(s) > 2]
     return word_candidates
 
+print('Word database loading......')
+with open('popular.txt') as file:
+    list_lines = [line.rstrip('\n') for line in file]
+    words_3char = [s for s in list_lines if len(s) == 3]
+    words_4char = [s for s in list_lines if len(s) == 4]
+    words_5char = [s for s in list_lines if len(s) == 5]
+    words_6char = [s for s in list_lines if len(s) == 6]
+    words_7char = [s for s in list_lines if len(s) == 7]
+print('Database loaded.')
+
+word = 'helao'
+if word in words_5char:
+    print('Found! the word is ', word)
+else:
+    print(word, 'not found')
+
+
 while(True):
     user_input = input('type a phone number (x to exit) ')
     if user_input == 'x':
@@ -74,4 +90,6 @@ while(True):
     user_input = format_cell(user_input)
     print(user_input)
     print('possible candidates are ', trim_cell(user_input))
+
+
 
