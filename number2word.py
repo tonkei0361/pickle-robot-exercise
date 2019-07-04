@@ -32,7 +32,7 @@ def num2letters(num):
         letters = [str(num)]
     return letters
 
-def nums2words(num):
+def nums_to_possible_words(num):
     '''
     This function takes a number in the form of
     a string and returns a list with possible
@@ -40,12 +40,33 @@ def nums2words(num):
     number pad.
     '''
     letters_list = []
+    words_list = []
     for s in num:
         letters_list.append(num2letters(s))
-    print(letters_list)
-        
     
-        
+    print(letters_list)
+    for elem1 in letters_list[0]:
+        word1 = elem1
+        for elem2 in letters_list[1]:
+            word2 = word1 + elem2
+            for elem3 in letters_list[2]:
+                word3 = word2 + elem3
+                words_list.append(word3)
+    print(words_list)
+
+def letters_to_possible_words(letters, word='', words=[], position=1):
+    if(position == len(letters_list)):
+        for elem in letters[-1]:
+            words.append(word + elem)
+        return words
+
+    for elem in letters[position-1]:
+        letters_to_possible_words(letters, word+elem, words, position+1)
+    if position == 1:
+        return words
+    
+
+
 def format_cell(cell):
     '''
     This function formats the cell number by
@@ -87,17 +108,50 @@ with open('popular.txt') as file:
     words_5char = [s for s in list_lines if len(s) == 5]
     words_6char = [s for s in list_lines if len(s) == 6]
     words_7char = [s for s in list_lines if len(s) == 7]
+    words_dict = {
+    3: words_3char,
+    4: words_4char,
+    5: words_5char,
+    6: words_6char,
+    7: words_7char
+    }
 print('Database loaded.')
 
-
-while(True):
+# Do some random tests
+while(False):
     user_input = input('type a phone number (x to exit) ')
-    print((user_input))
     if user_input == 'x':
         print('Bye!')
         break
+    print(user_input)
     user_input = format_cell(user_input)
+
     print('possible candidates are ', trim_cell(user_input))
-    nums2words(trim_cell(user_input)[0])
+    nums_to_possible_words(trim_cell(user_input)[0])
+
+# Test the recursion function
+while True:
+    user_input = input('type a phone number (x to exit) ')
+    if user_input == 'x':
+        print('Bye!')
+        break
+    print(user_input)
+    user_input = format_cell(user_input)
+
+    letters_list = []
+    for string in trim_cell(user_input):
+        for char in string:
+            letters_list.append(num2letters(char))
+    words_candidates = letters_to_possible_words(letters_list,'',[])
+
+    words_reference = words_dict[len(words_candidates[0])]
+    found = False
+    for string in words_candidates:
+        if string in words_reference:
+            print('found, the word is', string)
+            found = True
+    if not found:
+        print('nothing found...')
+
 
 
