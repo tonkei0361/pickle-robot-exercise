@@ -138,20 +138,20 @@ while True:
     print(user_input)
     user_input = format_cell(user_input)
 
-    letters_list = []
     for string in trim_cell(user_input):
+        letters_list = []
         for char in string:
             letters_list.append(num2letters(char))
-    words_candidates = letters_to_possible_words(letters_list,'',[])
+        words_candidates = letters_to_possible_words(letters_list,'',[])
 
-    words_reference = words_dict[len(words_candidates[0])]
-    found = False
-    for string in words_candidates:
-        if string in words_reference:
-            print('found, the word is', string)
-            found = True
-    if not found:
-        print('nothing found...')
+        words_reference = words_dict[len(words_candidates[0])]
+        found = False
+        for word in words_candidates:
+            if word in words_reference:
+                print('found, the word is', user_input.replace(string, word.upper()))
+                found = True
+        if not found:
+            print('nothing found...')
 
 
 
