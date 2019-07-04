@@ -31,6 +31,20 @@ def num2letters(num):
     else:
         letters = [str(num)]
     return letters
+
+def nums2words(num):
+    '''
+    This function takes a number in the form of
+    a string and returns a list with possible
+    combinations of letters that are on the
+    number pad.
+    '''
+    letters_list = []
+    for s in num:
+        letters_list.append(num2letters(s))
+    print(letters_list)
+        
+    
         
 def format_cell(cell):
     '''
@@ -75,12 +89,6 @@ with open('popular.txt') as file:
     words_7char = [s for s in list_lines if len(s) == 7]
 print('Database loaded.')
 
-word = 'hello'
-if word in words_5char:
-    print('Found! the word is ', word)
-else:
-    print(word, 'not found')
-
 
 while(True):
     user_input = input('type a phone number (x to exit) ')
@@ -90,5 +98,6 @@ while(True):
         break
     user_input = format_cell(user_input)
     print('possible candidates are ', trim_cell(user_input))
+    nums2words(trim_cell(user_input)[0])
 
 
