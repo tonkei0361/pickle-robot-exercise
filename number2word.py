@@ -75,7 +75,7 @@ with open('popular.txt') as file:
     words_7char = [s for s in list_lines if len(s) == 7]
 print('Database loaded.')
 
-word = 'helao'
+word = 'hello'
 if word in words_5char:
     print('Found! the word is ', word)
 else:
@@ -84,12 +84,11 @@ else:
 
 while(True):
     user_input = input('type a phone number (x to exit) ')
+    print((user_input))
     if user_input == 'x':
         print('Bye!')
         break
     user_input = format_cell(user_input)
-    print(user_input)
     print('possible candidates are ', trim_cell(user_input))
-
 
 
