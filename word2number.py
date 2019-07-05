@@ -1,5 +1,5 @@
 
-def letter2num(cell):
+def words_to_number(cell):
 
     cell = cell.upper()
 
@@ -29,6 +29,6 @@ while True:
     if user_input == 'x':
         print('Bye!')
         break
-    print(letter2num(user_input))
+    print(words_to_number(user_input))
 
 
