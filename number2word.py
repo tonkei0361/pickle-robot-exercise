@@ -1,17 +1,13 @@
+import re
 
-def num2letters(num):
-    '''
-    This function takes a single integer as
-    the input and returns the corresponding
-    letters on the number pad, organized in
-    a list
-    '''
-    try:
-        num = int(num)
-    except ValueError:
-        print('Input should be an integer!!')
-        return 'null'
-    
+
+def num2letters(num: str) -> list[str]:
+    """
+    This function takes a single integer as the input and returns
+    the corresponding letters on the number pad.
+    """
+    num = int(num)
+
     if num == 2:
         letters = ['a', 'b', 'c']
     elif num == 3:
@@ -32,58 +28,83 @@ def num2letters(num):
         letters = [str(num)]
     return letters
 
-def letters_to_possible_words(letters, word='', words=[], position=1):
-    '''
-    This function is a recursive function that finds all possible
-    conbinations of words corresponding to a series of numbers on
-    the number pad. 
-    '''
 
-    if(position == len(letters)):
+def letters_to_possible_words(letters, word='', words=[], position=1):
+    """
+    This function is a recursive function that finds all possible
+    combinations of words corresponding to a series of numbers on
+    the number pad.
+
+    Parameters
+    ----------
+    letters: list[list[str]]
+        A list containing lists that stores corresponding letters of a number
+        on the number pad.
+    word: str
+        A temporary parameter for recursion storing one combination of all
+        possible words.
+    words: list[str]
+        A list storing all possible combinations of number-to-word for a specific
+        number.
+    position: int
+        A variable to keep track of which digit current recursive function is
+        at.
+
+    Returns
+    -------
+    words: list[str]
+        A list storing all possible combinations of number-to-word for a specific
+        number.
+    """
+
+    if position == len(letters):
         for elem in letters[-1]:
             words.append(word + elem)
         return words
 
-    for elem in letters[position-1]:
-        letters_to_possible_words(letters, word+elem, words, position+1)
+    for elem in letters[position - 1]:
+        letters_to_possible_words(letters, word + elem, words, position + 1)
     if position == 1:
         return words
 
-def format_cell(cell):
-    '''
+
+def format_cell(cell: str) -> str:
+    """
     This function formats the cell number by
     removing +, (, ), -, and space.
-    '''
-    return ''.join( c for c in cell if c not in '()+- ' )
+    """
+    return ''.join(c for c in cell if c not in '()+- ')
 
-def trim_cell(cell):
-    '''
-    This function trims the input, which is a cell number
-    with special characters removed. It removes the area
-    code and only leaves the last 7 digits.
 
-    It returns a list of numbers inside the cell number 
-    that may be turned into words. The length is set to
-    be longer than 2 digits.
-    '''
-    cell_trimmed = cell[-7:]
-    temp = ''
-    count = 0
-    word_candidates = []
-    for c in cell_trimmed:
-        count += 1
-        if(c == '0' or c == '1'):
-            word_candidates.append(temp)
-            temp = ''
-        else:
-            temp += c
-        if count == len(cell_trimmed):
-            word_candidates.append(temp)
-    word_candidates = [s for s in word_candidates if len(s) > 2]
-    return word_candidates
+def find_single_wordification(cell):
+    """
+    This function identifies all possible ways that a cell number
+    can be rewritten in terms of a single word with a minimum length.
+    It can be part or all of the cell number.
+
+    For example, 79374 with minimum of 3 letters, the function returns
+    [793, 7937, 79374, 937, 9374, 374].
+    """
+    cell = format_cell(cell)
+    number_candidates = [elem for elem in re.split('0|1', cell[-7:]) if len(elem) > 2]
+    number_candidates_all_combinations = {}
+    minimum_letters = 3
+
+    for string in number_candidates:
+        for start_index in range(0, len(string)-minimum_letters+1):
+            end_index = start_index + minimum_letters
+            while end_index <= len(string):
+                word_len = end_index - start_index
+                if word_len in number_candidates_all_combinations:
+                    number_candidates_all_combinations[word_len].append(string[start_index:end_index])
+                else:
+                    number_candidates_all_combinations[word_len] = [(string[start_index:end_index])]
+                end_index += 1
+    return number_candidates_all_combinations
+
 
 def word_database(filename):
-    '''
+    """
     This function creates a word database used for searching a match
     between a cell number and a word. This database is the most popular
     25322 words. Since words shorter than 3 or longer than 7 letters
@@ -91,7 +112,8 @@ def word_database(filename):
     and stored in a dictionary.
 
     'popular.txt' file credit: @dolph on Github
-    '''
+
+    """
 
     with open(filename) as file:
         list_lines = [line.rstrip('\n') for line in file]
@@ -101,45 +123,83 @@ def word_database(filename):
         words_6char = [s for s in list_lines if len(s) == 6]
         words_7char = [s for s in list_lines if len(s) == 7]
     words_dict = {
-    3: words_3char,
-    4: words_4char,
-    5: words_5char,
-    6: words_6char,
-    7: words_7char
+        3: words_3char,
+        4: words_4char,
+        5: words_5char,
+        6: words_6char,
+        7: words_7char
     }
     return words_dict
 
+
 def number_to_words(cell):
-    '''
+    """
     This is the main function that converts part or all of
     a cell number into words.
 
-    Output is a list of cell nubmers with part or all of them
+    Output is a list of cell numbers with part or all of them
     converted to words.
-    '''
+    """
 
     cell = format_cell(cell)
-    for string in trim_cell(cell):
-        letters_list = []
-        for char in string:
-            letters_list.append(num2letters(char))
-        words_candidates = letters_to_possible_words(letters_list,'',[])
-    words_reference = word_database('popular.txt')[len(words_candidates[0])]
-    output = []
-    for word in words_candidates:
-        if word in words_reference:
-            output.append(cell.replace(string, word.upper()))
+    output = {}
+
+    for key, value in find_single_wordification(cell).items():
+        for string in value:
+            letters_list = []
+            for char in string:
+                letters_list.append(num2letters(char))
+            words_candidates = letters_to_possible_words(letters_list, '', [])
+            words_reference = word_database('popular.txt')[len(string)]
+            for word in words_candidates:
+                if word in words_reference:
+                    """
+                        Conditions below are for formatting the output cell number considering all
+                    possible conditions. The wordifiable number can be at four of the following
+                    locations:
+                        1) starting from the first digit with less than seven letters;
+                        2) at the end of number and has less than seven letters;
+                        3) all seven digits can be wordified;
+                        4) in the middle of the number with less than seven letters.
+                    The four if-elif-else statements accomplish above classifications by
+                    utilizing the starting index of wordified number, counted backwards.
+                    """
+                    index = cell.find(string) - len(cell)
+                    if index == -7 and len(word) < 7:
+                        output_cell = cell[:index] + \
+                                      '-' + word.upper() + \
+                                      '-' + cell[index+len(word):]
+                    elif -index == len(word) and len(word) < 7:
+                        output_cell = cell[:-7] + \
+                                      '-' + cell[-7:index] + \
+                                      '-' + word.upper()
+                    elif index == -7 and len(word) == 7:
+                        output_cell = cell[:index] + \
+                                      '-' + word.upper()
+                    else:
+                        output_cell = cell[:-7] + \
+                                      '-' + cell[-7:index] + \
+                                      '-' + word.upper() + \
+                                      '-' + cell[index+len(word):]
+                    if string not in output:
+                        output[string] = [output_cell]
+                    else:
+                        output[string].append(output_cell)
     if not output:
-        output.append(cell)
+        output['None'] = cell
     return output
 
-# Loop to test the function
-while True:
-    user_input = input('type a phone number (x to exit) ')
-    if user_input == 'x':
-        print('Bye!')
-        break
-    print(number_to_words(user_input))
+
+def main():
+    while True:
+        user_input = input('type a phone number (x to exit) ')
+        if user_input == 'x':
+            print('Bye!')
+            break
+        for key, value in number_to_words(user_input).items():
+            print(key, '->', value)
+        print(find_single_wordification(user_input))
 
 
-
+if __name__ == '__main__':
+    exit(main())
