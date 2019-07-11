@@ -186,7 +186,7 @@ def number_to_words(cell):
                     else:
                         output[string].append(output_cell)
     if not output:
-        output['None'] = cell
+        output['None'] = [cell]
     return output
 
 
