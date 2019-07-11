@@ -1,7 +1,12 @@
 
 def words_to_number(cell):
+    """
+    This function takes a number containing words and other characters and convert
+    all alphabets to numbers.
+    """
 
     cell = cell.upper()
+    cell = ''.join(c for c in cell if c not in '()+- ')
 
     for char in cell:
         if char in 'ABC':
@@ -22,13 +27,22 @@ def words_to_number(cell):
             cell = cell.replace(char, '9')
         else:
             pass
-    return cell
+        output = cell[:-7] + '-' + cell[-7:-4] + '-' + cell[-4:]
+    return output
 
-while True:
-    user_input = input('tyep a number with letters (x to exit):')
-    if user_input == 'x':
-        print('Bye!')
-        break
-    print(words_to_number(user_input))
 
+def main():
+    test_cases = ['800REST479', '617HARVARD', '800QUALITY', '800RECTIFY', '800RIGIDLY', '8001ROOKIE']
+    for test in test_cases:
+        print('Convert', test, ':', words_to_number(test))
+    while True:
+        user_input = input('tyep a number with letters (x to exit):')
+        if user_input == 'x':
+            print('Bye!')
+            break
+        print(words_to_number(user_input))
+
+
+if __name__ == '__main__':
+    main()
 
