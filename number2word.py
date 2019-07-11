@@ -1,7 +1,7 @@
 import re
 
 
-def num2letters(num: str) -> list[str]:
+def num2letters(num: str):
     """
     This function takes a single integer as the input and returns
     the corresponding letters on the number pad.
