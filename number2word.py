@@ -100,7 +100,23 @@ def find_single_wordification(cell):
                 else:
                     number_candidates_all_combinations[word_len] = [(string[start_index:end_index])]
                 end_index += 1
+            number_candidates_all_combinations[word_len] = list(set(number_candidates_all_combinations[word_len]))
     return number_candidates_all_combinations
+
+
+def special_case(cell, repeated_num, count):
+    cell = format_cell(cell)
+    cell_trimmed = cell[-7:]
+    if count == 4:
+        pass
+    elif count == 5:
+        pass
+    elif count == 6:
+        pass
+    elif count == 7:
+        pass
+    else:
+        pass
 
 
 def word_database(filename):
@@ -142,17 +158,23 @@ def number_to_words(cell):
     """
 
     cell = format_cell(cell)
+    cell_trimmed = cell[-7:]
     output = {}
+    repeated_segment = 'None'
+    for char in '23456789':
+        num_occurrence = cell[-7:].count(char)
+        if num_occurrence > 3:
+            repeated_segment = char * num_occurrence
 
-    for key, value in find_single_wordification(cell).items():
-        for string in value:
+    for combinations in find_single_wordification(cell).values():
+        for string in combinations:
             letters_list = []
             for char in string:
                 letters_list.append(num2letters(char))
             words_candidates = letters_to_possible_words(letters_list, '', [])
             words_reference = word_database('popular.txt')[len(string)]
             for word in words_candidates:
-                if word in words_reference:
+                if word in words_reference and string not in repeated_segment:
                     """
                         Conditions below are for formatting the output cell number considering all
                     possible conditions. The wordifiable number can be at four of the following
@@ -185,6 +207,26 @@ def number_to_words(cell):
                         output[string] = [output_cell]
                     else:
                         output[string].append(output_cell)
+                elif word in words_reference and string in repeated_segment:
+                    """
+                        This portion follows the same logic above for repeated elements. All possible
+                        location of a word inside repeated portion of a cell number is list out. To
+                        test the function, use inputs like 800-233-3333 and 800-666-6666
+                    """
+                    for start_index in range(cell_trimmed.find(repeated_segment),len(repeated_segment)+1-len(string)):
+                        end_index = start_index + len(string)
+                        if start_index == 0 and end_index != 7:
+                            output_cell = cell[:-7] + '-' + word.upper() + '-' + cell_trimmed[end_index:]
+                        elif start_index != 0 and end_index == 7:
+                            output_cell = cell[:-7] + cell_trimmed[:start_index] + '-' + word.upper()
+                        elif start_index == 0 and end_index == 7:
+                            output_cell = cell[:-7] + '-' + word.upper()
+                        else:
+                            output_cell = cell[:-7] + '-' + cell_trimmed[:start_index] + '-' + word.upper() + '-' + cell_trimmed[end_index:]
+                        if string not in output:
+                            output[string] = [output_cell]
+                        else:
+                            output[string].append(output_cell)
     if not output:
         output['None'] = [cell]
     return output
@@ -192,13 +234,17 @@ def number_to_words(cell):
 
 def main():
     while True:
-        user_input = input('type a phone number (x to exit) ')
-        if user_input == 'x':
-            print('Bye!')
-            break
-        for key, value in number_to_words(user_input).items():
-            print(key, '->', value)
-        print(find_single_wordification(user_input))
+        print(number_to_words('2176666666'))
+        print(number_to_words('2176666667'))
+        print(number_to_words('8006294000'))
+        # user_input = input('type a phone number (x to exit) ')
+        # if user_input == 'x':
+        #     print('Bye!')
+        #     break
+        # for key, value in number_to_words(user_input).items():
+        #     print(key, '->', value)
+        # print(find_single_wordification(user_input))
+        break
 
 
 if __name__ == '__main__':
