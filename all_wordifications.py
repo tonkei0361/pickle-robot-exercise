@@ -30,22 +30,23 @@ def all_wordifications(cell: str):
                                                                begin_elem + word_f + middle_elem + word_s + end_elem
                                     output.append(cell_wordified_formatted)
     if not output:
-        output.append['No other combinations']
+        output.append('No other combinations')
     return output
 
 
 def main():
     cell_test = ['800QUALITY', '617-HARVARD', '800RECTIFY', '800RIGIDLY',
                  '2175683968', '8007825439', '8001397328', '8001ROOKIE',
-                 '8002222345', '8006666666']
-    selection = -3
-    print(w2n.words_to_number(cell_test[selection]))
-    print('Single wordification:')
-    for key, value in n2w.number_to_words(w2n.words_to_number(cell_test[selection])).items():
-        print(key, ':', value)
-    print('Multiple wordifications:')
-    print(all_wordifications(w2n.words_to_number(cell_test[selection])))
-    print(len(all_wordifications(w2n.words_to_number(cell_test[selection]))))
+                 '8002222345', '8006666666', '2174170499', '8006294000']
+    for selection in range(9, len(cell_test)):
+        print(w2n.words_to_number(cell_test[selection]))
+        print('Single wordification:')
+        for key, value in n2w.number_to_words(w2n.words_to_number(cell_test[selection])).items():
+            print(key, ':', value)
+        print('Multiple wordifications:')
+        print(all_wordifications(w2n.words_to_number(cell_test[selection])))
+        print(len(all_wordifications(w2n.words_to_number(cell_test[selection]))))
+        input('Hit enter to see the next one')
 
 
 if __name__ == '__main__':
