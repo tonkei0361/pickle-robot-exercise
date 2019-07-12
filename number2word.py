@@ -33,7 +33,7 @@ def create_word_database(filename):
 def number_to_words(cell):
 
     """
-    This function uses sliding window method to search for any possible combinations
+    This function uses sliding window method to search for all possible combinations
     of numbers that can be wordified. It creates an English word database using most
     widely used 25322 words contained in 'popular.txt' The output is a dictionary
     containing all possible wordifications. The key is the wordified part of the cell
