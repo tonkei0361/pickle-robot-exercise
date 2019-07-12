@@ -37,7 +37,7 @@ def all_wordifications(cell: str):
 def main():
     cell_test = ['800QUALITY', '617-HARVARD', '800RECTIFY', '800RIGIDLY',
                  '2175683968', '8007825439', '8001397328', '8001ROOKIE',
-                 '8002222345', '8006666666', '2174170499', '8006294000']
+                 '8006666666', '8002222345', '2174170499', '8006294000']
     for selection in range(9, len(cell_test)):
         print(w2n.words_to_number(cell_test[selection]))
         print('Single wordification:')
